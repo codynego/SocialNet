@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'account',
     'userprofile',
     'posts',
-    'newsfeed',
+    'search',
+    'timeline',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -154,7 +155,7 @@ REST_FRAMEWORK = {
 
 import datetime
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=240),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=2000),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1), 
 }
 
