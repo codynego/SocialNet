@@ -30,10 +30,8 @@ class FeedAlgorithm:
         # Apply personalization techniques based on user preferences and interactions
 
         # Step 6: Return the Feed
-        serializer = PostSerializer([item[0] for item in sorted_feed], many=True)
-        serialized_feed = serializer.data
-        json_feed = json.dumps(serialized_feed)
-        return json_feed
+        feeds = [item[0] for item in sorted_feed]
+        return feeds
 
     def calculate_relevance_score(self, post):
         # Implement your scoring logic here
@@ -42,8 +40,8 @@ class FeedAlgorithm:
         relevance_score = 0
 
         # Example: Consider recency and popularity
-        time_difference = timezone.now() - post.created
-        popularity_score = post.likes.count() + post.comments.count()
+        time_difference = timezone.now().date() - post.created
+        popularity_score = post.likes.count() + post.comment.count()
 
         # Weight the factors and calculate the relevance score
         relevance_score = (popularity_score * 0.6) + (time_difference.days * 0.4)
