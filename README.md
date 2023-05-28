@@ -1,5 +1,14 @@
 # SocialNet
 
+
+## Author
+
+- Name: Abednego Emonena
+- Email: emonenaabednego@gmail.com
+- Twitter: @codynego
+
+## Project Overview
+
 SocialNet is an image sharing social network
 
 ## Installation
@@ -80,3 +89,8 @@ The following are the API endpoints available in this project:
 ### Timeline
 
 - `GET api/timeline/` - Return the timeline of the authenticated user
+
+
+## License
+
+This project is licensed under the MIT License.
