@@ -17,6 +17,8 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 class PostView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class Postdetails(generics.RetrieveUpdateDestroyAPIView):
     """

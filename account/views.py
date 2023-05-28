@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from .serializers import UserSerializer, UserRegistration, LoginSerializer, RequestPasswordResetEmailSerializer, SetNewPasswordSerializer, EmailVerificationSerializer, ResendVerificationEmailSerializer, LogoutSerializer
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from userprofile.models import User
@@ -21,7 +21,7 @@ from django.utils.encoding import smart_bytes, smart_str, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage
 import traceback
-
+from django.views.decorators.csrf import csrf_exempt
 
 
 class RegistrationView(generics.GenericAPIView):
@@ -53,6 +53,7 @@ class RegistrationView(generics.GenericAPIView):
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -184,8 +185,11 @@ class SetNewPasswordView(generics.GenericAPIView):
 
 class LogoutView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
- 
     permission_classes = (permissions.IsAuthenticated,)
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
