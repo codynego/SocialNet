@@ -27,6 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 class RegistrationView(generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistration
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

@@ -16,7 +16,7 @@ class Post(models.Model):
     #likes = models.ManyToManyField(User, through='Like', related_name='liked_posts'),
     created = models.DateField(auto_now_add=True)
     publish = models.DateField(auto_now=True)
-    likes = models.ManyToManyField(User, related_name='liked_posts')
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
 
     def like_post(self, user):
         """
@@ -29,6 +29,10 @@ class Post(models.Model):
         Helper method to remove a user from the likes of the post.
         """
         self.likes.remove(user)
+
+class PostImages(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='img', default='', null=True, blank=True)
 
 
 class Comment(models.Model):

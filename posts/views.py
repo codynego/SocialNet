@@ -6,20 +6,29 @@ from rest_framework.response import Response
 from .serializers import PostSerializer, HashtagsSerializer, CommentSerializer, LikeSerializer
 from django.db import models
 from userprofile.models import User
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 #####
 #
 ##
 
+
 class PostView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
 
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
 class Postdetails(generics.RetrieveUpdateDestroyAPIView):
     """
     retrieve, update and delete a specific post
@@ -29,6 +38,8 @@ class Postdetails(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
 
 class UserPosts(APIView):
     def get(self, request, pk):
