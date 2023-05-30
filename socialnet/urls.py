@@ -20,6 +20,29 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from drf_yasg.inspectors import SwaggerAutoSchema
+from rest_framework import serializers
+
+
+class CustomSwaggerAutoSchema(SwaggerAutoSchema):
+    def get_request_serializer(self):
+        return self.view.get_request_serializer()
+    
+    def get_view_parameters(self):
+        parameters = super().get_view_parameters()
+        request_serializer = self.get_request_serializer()
+
+        if request_serializer:
+            for field in request_serializer().fields.values():
+                if isinstance(field, serializers.FileField):
+                    parameters.append(openapi.Parameter(
+                        name=field.field_name,
+                        in_=openapi.IN_FORM,
+                        type=openapi.TYPE_FILE,
+                        required=field.required,
+                    ))
+        return parameters
+
 schema_view = get_schema_view(
     openapi.Info(
         title="SocialNet",
@@ -42,6 +65,6 @@ urlpatterns = [
     path('api/', include('posts.urls')),
     path('api/', include('search.urls')),
     path('api/', include('timeline.urls')),
-    path('', schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui'),
+    path('', schema_view.with_ui('swagger', cache_timeout=0, auto_schema=CustomSwaggerAutoSchema), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
 ]
